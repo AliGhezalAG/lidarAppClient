@@ -14,8 +14,24 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    fenclient.cpp
+    fenclient.cpp \
+    header.cpp \
+    object.cpp \
+    objectpacket.cpp \
+    shape.cpp \
+    triplet.cpp \
+    vertice.cpp \
+    zone.cpp \
+    zonepacket.cpp
 
-HEADERS  += FenClient.h
+HEADERS  += FenClient.h \
+    header.h \
+    object.h \
+    objectpacket.h \
+    shape.h \
+    triplet.h \
+    vertice.h \
+    zone.h \
+    zonepacket.h
 
 FORMS    += FenClient.ui
