@@ -1,4 +1,4 @@
-
+﻿
 #include "FenClient.h"
 
 FenClient::FenClient()
@@ -16,7 +16,7 @@ FenClient::FenClient()
 
     connect(objectSocket, SIGNAL(connected()), this, SLOT(connecte()));
     connect(objectSocket, SIGNAL(disconnected()), this, SLOT(deconnecte()));
-//    connect(objectSocket, SIGNAL(readyRead()), this, SLOT(donneesRecues()));
+    //    connect(objectSocket, SIGNAL(readyRead()), this, SLOT(donneesRecues()));
     connect(objectSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(erreurSocket(QAbstractSocket::SocketError)));
 
     tailleMessage = 0;
@@ -55,49 +55,43 @@ void FenClient::on_boutonRequest_clicked()
 // On a reçu un paquet (ou un sous-paquet)
 void FenClient::donneesRecues()
 {
-    QByteArray zoneStreamSeparator = QByteArray::fromHex("0000");
-    QByteArray objectStreamSeparator = QByteArray::fromHex("0000");
-
     QByteArray zoneStream = zoneSocket->readAll();
     QByteArray objectStream = objectSocket->readAll();
 
-    int startIndex = zoneStream.indexOf(zoneStreamSeparator)+2;
-    int endIndex = zoneStream.indexOf(zoneStreamSeparator, startIndex)-2;
-    QByteArray packet = zoneStream.mid(startIndex, endIndex-startIndex);
-    //    listeMessages->append(QTextCodec::codecForMib(106)->toUnicode(packet));
+    if(!zoneStream.isEmpty() && !objectStream.isEmpty())
+    {
+        QVariantMap root_map;
 
-    QJsonDocument jsonPacket = QJsonDocument::fromJson(packet);
-    QJsonObject root_obj = jsonPacket.object();
-    QVariantMap root_map = root_obj.toVariantMap();
+        root_map = getMapFromStream(zoneStream);
+        ZonePacket zonePack = *new ZonePacket(root_map);
 
-    ZonePacket zonePack = *new ZonePacket(root_map);
+        root_map = getMapFromStream(objectStream);
+        ObjectPacket objectPack = *new ObjectPacket(root_map);
 
+        qInfo() << "Done!";
+        //    listeMessages->append(QTextCodec::codecForMib(106)->toUnicode(packet));
+    }
+}
 
-    startIndex = zoneStream.indexOf(objectStreamSeparator)+2;
-    endIndex = zoneStream.indexOf(objectStreamSeparator, startIndex)-2;
-    packet = zoneStream.mid(startIndex, endIndex-startIndex);
-    //    listeMessages->append(QTextCodec::codecForMib(106)->toUnicode(packet));
+QVariantMap FenClient::getMapFromStream(QByteArray &stream)
+{
+    QByteArray streamSeparator = QByteArray::fromHex("0000");
 
+    int startIndex;
+    int endIndex;
+    QByteArray packet;
+    QJsonDocument jsonPacket;
+    QJsonObject root_obj;
+    QVariantMap root_map;
+
+    startIndex = stream.indexOf(streamSeparator)+2;
+    endIndex = stream.indexOf(streamSeparator, startIndex)-2;
+    packet = stream.mid(startIndex, endIndex-startIndex);
     jsonPacket = QJsonDocument::fromJson(packet);
     root_obj = jsonPacket.object();
     root_map = root_obj.toVariantMap();
 
-    ObjectPacket objectPack = *new ObjectPacket(root_map);
-
-//    QVariant header_map = root_map["header"].toMap();
-//    QVariantList zone_map = root_map["zones"].toList();
-
-//    zoneList.clear();
-//    QVariant currentZone;
-//    for (int i = 0; i < zone_map.size(); i++) {
-//        currentZone = zone_map.at(i);
-//        QVariantMap zone_map = currentZone.value<QVariantMap>();
-//        Zone myZone = *new Zone(zone_map["name"].toString(), zone_map["objectCount"].toInt(), zone_map["objectIds"].value<QList<int>>());
-//        Zone testZone = *new Zone(zone_map);
-//        zoneList.append(myZone);
-//        objectCount->setText(QString::number(myZone.objectCount));
-//        emit countingProcessingEnded();
-//    }
+    return root_map;
 }
 
 void FenClient::processZones(QList<Zone> &zoneList)

@@ -32,6 +32,7 @@ private:
     ZonePacket zonePacket;
     ObjectPacket objectPacket;
     QList<Zone> zoneList;
+    QVariantMap getMapFromStream(QByteArray &stream);
 
 signals:
     void countingProcessingEnded();

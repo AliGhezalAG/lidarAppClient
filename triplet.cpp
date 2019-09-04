@@ -7,7 +7,9 @@ Triplet::Triplet()
 
 Triplet::Triplet(QVariantMap &triplet_map)
 {
-    this->x = triplet_map["x"].toDouble();
-    this->y = triplet_map["y"].toDouble();
-    this->z = triplet_map["z"].toDouble();
+    bool ok = false;
+
+    this->x = triplet_map["x"].toString().toDouble(&ok);
+    this->y = triplet_map["y"].toString().toDouble(&ok);
+    this->z = triplet_map["z"].toString().toDouble(&ok);
 }

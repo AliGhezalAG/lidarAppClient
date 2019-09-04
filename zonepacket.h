@@ -10,7 +10,6 @@ class ZonePacket
 {
 public:
     ZonePacket();
-    ZonePacket(const ZonePacket &oldObj);
     ZonePacket(QVariantMap &packet_map);
     ~ZonePacket();
     Header      header;

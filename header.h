@@ -12,9 +12,9 @@ public:
     Header(const Header &oldObj);
     Header(QVariantMap &header_map);
     ~Header();
-    int     timestamp;
-    QString frameId;
-    int     sequence;
+    QString     timestamp;
+    QString     frameId;
+    QString     sequence;
 };
 
 Q_DECLARE_METATYPE(Header)

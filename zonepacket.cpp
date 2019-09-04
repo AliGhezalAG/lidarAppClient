@@ -5,12 +5,6 @@ ZonePacket::ZonePacket()
 
 }
 
-ZonePacket::ZonePacket(const ZonePacket &oldObj)
-{
-    this->zones = oldObj.zones;
-    this->header = oldObj.header;
-}
-
 ZonePacket::ZonePacket(QVariantMap &packet_map)
 {
     QVariant currentHeader = packet_map["header"];

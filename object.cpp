@@ -11,7 +11,7 @@ Object::Object(QVariantMap &object_map)
     this->timestamp = object_map["timestamp"].toInt();
     this->objectClass = object_map["objectClass"].toString();
 
-    QVariant currentPosition = object_map["shape"];
+    QVariant currentPosition = object_map["position"];
     QVariantMap position_map = currentPosition.value<QVariantMap>();
     this->position = *new Triplet(position_map);
 
